@@ -218,6 +218,19 @@ static inline CGFloat AACStatusBarHeight()
     return (self.isViewControllerVisible && scrollViewIsSuffecientlyLong);
 }
 
+- (void)_updateScrollViewIndicatorInsets {
+    CGFloat offset = 0;
+    if (!self.navBarController.child.isContracted) {
+        offset = self.navBarController.child.view.center.y;
+    } else {
+        offset = self.navBarController.view.center.y;
+    }
+    self.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(AACStatusBarHeight() + offset,
+                                                             self.scrollView.scrollIndicatorInsets.left,
+                                                             self.scrollView.scrollIndicatorInsets.bottom,
+                                                             self.scrollView.scrollIndicatorInsets.right);
+}
+
 - (void)_handleScrolling
 {
     if (![self _shouldHandleScrolling])
@@ -272,10 +285,12 @@ static inline CGFloat AACStatusBarHeight()
             
             deltaY = MAX(0, deltaY - availableResistance);
         }
-        
+
         // 6 - Update the shyViewController
         self.navBarController.alphaFadeEnabled = self.alphaFadeEnabled;
         [self.navBarController updateYOffset:deltaY];
+
+        [self _updateScrollViewIndicatorInsets];
     }
     
     self.previousYOffset = self.scrollView.contentOffset.y;
