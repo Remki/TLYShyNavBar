@@ -260,7 +260,7 @@ static void * const kTLYShyNavBarManagerKVOContext = (void*)&kTLYShyNavBarManage
 
 - (BOOL)_shouldHandleScrolling
 {
-    if (self.disable)
+    if (self.disable || self.viewController.navigationController.topViewController != self.viewController)
     {
         return NO;
     }
